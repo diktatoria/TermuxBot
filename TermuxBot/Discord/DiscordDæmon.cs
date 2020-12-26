@@ -24,7 +24,7 @@ namespace TermuxBot.Discord
 
             var discord = new DiscordClient(new DiscordConfiguration()
             {
-                Token = "",
+                Token = "NzkyMzcxNDE0MTY5OTQ0MDk1.X-cvYg.WWUB7DI2LOF0-wRS8VCjcmaw270",
                 TokenType = TokenType.Bot       
             });
 
