@@ -9,7 +9,7 @@ namespace TermuxBot.Tests
     public class CommonTests
     {
         [Fact]
-        public async Task TestPowershellPlugin()
+        public async Task TestPowerShellPlugin()
         {
             PowerShellCLIPlugin plugin = new();
             await plugin.Initialize(new CancellationTokenSource(TimeSpan.FromSeconds(5)).Token);

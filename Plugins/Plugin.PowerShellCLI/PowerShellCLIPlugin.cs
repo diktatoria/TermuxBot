@@ -6,14 +6,14 @@ using Microsoft.PowerShell;
 
 namespace Plugin.PowerShellCLI
 {
-    public class PowerShellCLIPlugin
+    public class PowerShellCLIPlugin : TermuxBot.Common.Plugin
     {
         public PowerShellCLIPlugin()
         {
             
         }
 
-        public async Task Initialize(CancellationToken cancellationToken)
+        public override async Task Initialize(CancellationToken cancellationToken)
         {
             var sessionState = InitialSessionState.CreateDefault();
 
@@ -26,6 +26,11 @@ namespace Plugin.PowerShellCLI
             }
             
             cancellationToken.ThrowIfCancellationRequested();
+        }
+
+        public override Task Unload()
+        {
+            return Task.CompletedTask;
         }
     }
 }
