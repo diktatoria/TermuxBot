@@ -3,12 +3,14 @@ using System.Management.Automation.Runspaces;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.PowerShell;
+using TermuxBot.Common;
 
 namespace Plugin.PowerShellCLI
 {
     public class PowerShellCLIPlugin : TermuxBot.Common.Plugin
     {
-        public PowerShellCLIPlugin()
+        public PowerShellCLIPlugin(PluginController assignedController)
+            : base(assignedController)
         {
             
         }
@@ -16,7 +18,7 @@ namespace Plugin.PowerShellCLI
         public override async Task Initialize(CancellationToken cancellationToken)
         {
             var sessionState = InitialSessionState.CreateDefault();
-
+            
             int result = ConsoleShell.Start(sessionState, "TermuX Bot 1.0", "Enter 'PS help' for help", new string[] {});
             if(result != 0) { return; }
 

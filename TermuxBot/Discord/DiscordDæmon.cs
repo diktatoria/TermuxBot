@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using DSharpPlus;
 using Microsoft.Extensions.Logging;
@@ -18,7 +19,7 @@ namespace TermuxBot.Discord
             _logger = logger;
         }
 
-        public async Task InitializeAsync()
+        public async Task InitializeAsync(CancellationToken cancellationToken)
         {
             _logger.Log(LogLevel.Information, "Starting Dicord Deamon...");
 
@@ -35,7 +36,7 @@ namespace TermuxBot.Discord
             };
 
             await discord.ConnectAsync();
-            //await Task.Delay(-1);
+            await Task.Delay(-1, cancellationToken);
         }
     }
 

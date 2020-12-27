@@ -11,8 +11,8 @@ namespace TermuxBot.Tests
         [Fact]
         public async Task TestPowerShellPlugin()
         {
-            PowerShellCLIPlugin plugin = new();
-            await plugin.Initialize(new CancellationTokenSource(TimeSpan.FromSeconds(5)).Token);
+            //PowerShellCLIPlugin plugin = new();
+            //await plugin.Initialize(new CancellationTokenSource(TimeSpan.FromSeconds(5)).Token);
 
         }
     }

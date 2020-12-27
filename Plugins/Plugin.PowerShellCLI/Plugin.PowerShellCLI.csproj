@@ -1,13 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>..\..\bin\Debug</OutputPath>
+    <DocumentationFile>..\..\bin\Debug\Plugin.PowerShellCLI.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.PowerShell.SDK" Version="7.0.3" />
-    <PackageReference Include="Microsoft.PowerShell.Commands.Diagnostics" Version="7.0.3" />
-    <PackageReference Include="Microsoft.WSMan.Management" Version="7.0.3" />
+    <PackageReference Include="Microsoft.PowerShell.SDK" Version="7.1.0" />
+    <PackageReference Include="Microsoft.PowerShell.Commands.Diagnostics" Version="7.1.0" />
+    <PackageReference Include="Microsoft.WSMan.Management" Version="7.1.0" />
   </ItemGroup>
 
   <ItemGroup>

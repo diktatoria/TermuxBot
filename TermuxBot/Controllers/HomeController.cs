@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using TermuxBot.Common;
 using TermuxBot.Discord;
 using TermuxBot.Models;
 
@@ -14,14 +16,19 @@ namespace TermuxBot.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private DiscordDæmon _discordDeamon;
+        private PluginController _pluginController;
 
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
             _discordDeamon = new DiscordDæmon(logger);
             
+            // Init Plugins
+            _pluginController = new PluginController();
+
+            // Init Discord Deamon
             _logger.Log(LogLevel.Information, "Starting Dicord Deamon...");
-            _discordDeamon.InitializeAsync()
+            _discordDeamon.InitializeAsync(CancellationToken.None)
                 .ContinueWith(OnDeamon_Exited);
         }
 
@@ -32,6 +39,11 @@ namespace TermuxBot.Controllers
 
         public IActionResult Index()
         {
+            if (!_pluginController.Initialized)
+            {
+                _pluginController.InitializeAllPlugins("./").Wait();
+            }
+
             return View();
         }
 
