@@ -31,7 +31,7 @@ namespace TermuxBot.Common
             Type type = assembly.GetType("Plugin.PowerShellCLI.PowerShellCLIPlugin");
             if (type == null) { return; }
 
-            var powerShellPlugin = Activator.CreateInstance(type, this) as Plugin;
+            Plugin powerShellPlugin = await Task.Run(() => Activator.CreateInstance(type, this) as Plugin);
 
             _runningTask = Task.Run(() => powerShellPlugin.Initialize(CancellationToken.None))
                                 .ContinueWith(OnPlugin_Exited);

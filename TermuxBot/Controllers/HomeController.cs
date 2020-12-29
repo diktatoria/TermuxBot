@@ -22,9 +22,9 @@ namespace TermuxBot.Controllers
         {
             _logger = logger;
             _discordDeamon = new DiscordDæmon(logger);
-            
+
             // Init Plugins
-            _pluginController = new PluginController();
+            _pluginController = new PluginController(logger);
 
             // Init Discord Deamon
             _logger.Log(LogLevel.Information, "Starting Dicord Deamon...");
@@ -32,9 +32,10 @@ namespace TermuxBot.Controllers
                 .ContinueWith(OnDeamon_Exited);
         }
 
-        private void OnDeamon_Exited(Task obj)
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error()
         {
-            _logger.Log(LogLevel.Critical, "Dicord Deamon exited");
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
         public IActionResult Index()
@@ -52,10 +53,9 @@ namespace TermuxBot.Controllers
             return View();
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        private void OnDeamon_Exited(Task obj)
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            _logger.Log(LogLevel.Critical, "Dicord Deamon exited");
         }
     }
 }
