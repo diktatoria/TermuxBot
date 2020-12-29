@@ -5,17 +5,20 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace TermuxBot.Common
 {
     public class PluginController
     {
-        public List<Plugin> _instanciatedPlugins;
         private Task _runningTask;
 
-        public PluginController()
+        public PluginController(ILogger<Controller> logger)
         {
-            _instanciatedPlugins = new List<Plugin>();
+            this.InstanciatedPlugins = new List<Plugin>();
+
+            this.Logger = logger;
         }
 
         public async Task InitializeAllPlugins(string pluginFolder)
@@ -23,14 +26,14 @@ namespace TermuxBot.Common
             // TODO: Get all dlls from Plugin Folder
 
             string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            var assembly = Assembly.LoadFile(Path.Combine(directory, "Plugin.PowerShellCLI.dll"));
+            Assembly assembly = Assembly.LoadFile(Path.Combine(directory, "Plugin.PowerShellCLI.dll"));
 
-            var type = assembly.GetType("Plugin.PowerShellCLI.PowerShellCLIPlugin");
-            if(type == null) { return; }
+            Type type = assembly.GetType("Plugin.PowerShellCLI.PowerShellCLIPlugin");
+            if (type == null) { return; }
 
-            var powershellPlugin = Activator.CreateInstance(type, this) as Plugin;
+            var powerShellPlugin = Activator.CreateInstance(type, this) as Plugin;
 
-            _runningTask = Task.Run(() => powershellPlugin.Initialize(CancellationToken.None))
+            _runningTask = Task.Run(() => powerShellPlugin.Initialize(CancellationToken.None))
                                 .ContinueWith(OnPlugin_Exited);
 
             this.Initialized = true;
@@ -41,5 +44,8 @@ namespace TermuxBot.Common
         }
 
         public bool Initialized { get; private set; }
+
+        public List<Plugin> InstanciatedPlugins { get; }
+        public ILogger<Controller> Logger { get; }
     }
 }
