@@ -16,8 +16,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{9084F3FE-CA26-40E4-96CD-F14D564637E9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TermuxBot.Common", "TermuxBot.Common\TermuxBot.Common.csproj", "{1F7018B0-6F7A-426C-B0B9-B579749C98C3}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TermuxBot.Tests", "TermuxBot.Tests\TermuxBot.Tests.csproj", "{36AE7456-1F63-4CAC-A292-F1E58ABCFF2E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Plugin.PowerShellCLI", "Plugins\Plugin.PowerShellCLI\Plugin.PowerShellCLI.csproj", "{51FA5E67-4AE6-4554-86C2-0B1100D373FF}"
@@ -33,6 +31,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{9207EA35
 		Build\build-local.ps1 = Build\build-local.ps1
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TermuxBot.API", "TermuxBot.API\TermuxBot.API.csproj", "{A2598969-7E88-411A-A835-C2476306A407}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TermuxBot.Common", "TermuxBot.Common\TermuxBot.Common.csproj", "{3E71FD69-95C7-4E1A-BF3A-CF6DF3A9B8CD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,10 +45,6 @@ Global
 		{F2ED66B9-918D-4D05-8CCF-77D96BAD4BC7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F2ED66B9-918D-4D05-8CCF-77D96BAD4BC7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F2ED66B9-918D-4D05-8CCF-77D96BAD4BC7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1F7018B0-6F7A-426C-B0B9-B579749C98C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1F7018B0-6F7A-426C-B0B9-B579749C98C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1F7018B0-6F7A-426C-B0B9-B579749C98C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1F7018B0-6F7A-426C-B0B9-B579749C98C3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{36AE7456-1F63-4CAC-A292-F1E58ABCFF2E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{36AE7456-1F63-4CAC-A292-F1E58ABCFF2E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{36AE7456-1F63-4CAC-A292-F1E58ABCFF2E}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -55,6 +53,14 @@ Global
 		{51FA5E67-4AE6-4554-86C2-0B1100D373FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{51FA5E67-4AE6-4554-86C2-0B1100D373FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{51FA5E67-4AE6-4554-86C2-0B1100D373FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A2598969-7E88-411A-A835-C2476306A407}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A2598969-7E88-411A-A835-C2476306A407}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A2598969-7E88-411A-A835-C2476306A407}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A2598969-7E88-411A-A835-C2476306A407}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3E71FD69-95C7-4E1A-BF3A-CF6DF3A9B8CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E71FD69-95C7-4E1A-BF3A-CF6DF3A9B8CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E71FD69-95C7-4E1A-BF3A-CF6DF3A9B8CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E71FD69-95C7-4E1A-BF3A-CF6DF3A9B8CD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

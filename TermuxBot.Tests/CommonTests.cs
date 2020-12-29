@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerShell.Commands;
 using Plugin.PowerShellCLI;
-using TermuxBot.Common;
+using TermuxBot.API;
 using Xunit;
 
 namespace TermuxBot.Tests

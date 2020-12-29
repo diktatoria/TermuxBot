@@ -8,7 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerShell;
-using TermuxBot.Common;
+using TermuxBot.API;
 
 namespace Plugin.PowerShellCLI
 {
@@ -16,7 +16,7 @@ namespace Plugin.PowerShellCLI
     /// A plugin for PowerShell execution
     /// </summary>
     /// <seealso cref="TermuxBot.Common.Plugin" />
-    public class PowerShellCLIPlugin : TermuxBot.Common.Plugin
+    public class PowerShellCLIPlugin : TermuxBot.API.Plugin
     {
         /// <summary>Initializes a new instance of the <see cref="PowerShellCLIPlugin" /> class.</summary>
         /// <param name="assignedController">The assigned controller.</param>

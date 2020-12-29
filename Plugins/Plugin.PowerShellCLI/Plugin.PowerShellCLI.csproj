@@ -17,9 +17,10 @@
     <PackageReference Include="Microsoft.PowerShell.SDK" Version="7.1.0" />
     <PackageReference Include="Microsoft.PowerShell.Commands.Diagnostics" Version="7.1.0" />
     <PackageReference Include="Microsoft.WSMan.Management" Version="7.1.0" />
+    <PackageReference Include="System.Management.Automation" Version="7.1.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\TermuxBot.Common\TermuxBot.Common.csproj" />
+    <ProjectReference Include="..\..\TermuxBot.API\TermuxBot.API.csproj" />
   </ItemGroup>
 </Project>

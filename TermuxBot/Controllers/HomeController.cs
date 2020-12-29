@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using TermuxBot.Common;
+using TermuxBot.API;
 using TermuxBot.Discord;
 using TermuxBot.Models;
 

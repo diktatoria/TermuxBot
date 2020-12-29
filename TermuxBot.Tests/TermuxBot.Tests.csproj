@@ -24,7 +24,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Plugins\Plugin.PowerShellCLI\Plugin.PowerShellCLI.csproj" />
-    <ProjectReference Include="..\TermuxBot.Common\TermuxBot.Common.csproj" />
     <ProjectReference Include="..\TermuxBot\TermuxBot.csproj" />
   </ItemGroup>
 

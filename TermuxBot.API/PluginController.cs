@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace TermuxBot.Common
+namespace TermuxBot.API
 {
     public class PluginController
     {
@@ -35,10 +35,20 @@ namespace TermuxBot.Common
 
                 Plugin powerShellPlugin = await Task.Run(() => Activator.CreateInstance(type, this) as Plugin);
 
-                _runningTask = Task.Run(() => powerShellPlugin.Initialize(CancellationToken.None))
-                    .ContinueWith(OnPlugin_Exited);
-
                 this.Initialized = true;
+
+                _runningTask = Task.Run(() => powerShellPlugin.Initialize(CancellationToken.None))
+                    .ContinueWith(task =>
+                    {
+                        if (task.IsCompletedSuccessfully)
+                        {
+                            OnPlugin_Exited(task);
+                            return;
+                        }
+
+                        this.Logger.Log(LogLevel.Critical, "Unable to initialize plugin 'Plugin.PowerShellCLI.PowerShellCLIPlugin'");
+                        this.Logger.Log(LogLevel.Error, task.Exception?.StackTrace);
+                    });
             }
             catch (Exception)
             {

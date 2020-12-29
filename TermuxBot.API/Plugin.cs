@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace TermuxBot.Common
+namespace TermuxBot.API
 {
     public abstract class Plugin
     {
