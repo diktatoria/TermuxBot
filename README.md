@@ -11,9 +11,9 @@ Just configure your Bot Token and start the server.
 Because TermuxBot is written in .NET Core, it is cross platform :)
 
 #### The following OSes are tested:  
-[x] Linux  
-[x] Windows  
-[-] Mac OS  
+- [x] Linux  
+- [x] Windows  
+- [ ] Mac OS  
 
 
 More Information is following.
