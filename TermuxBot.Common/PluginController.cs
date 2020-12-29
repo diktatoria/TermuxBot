@@ -40,7 +40,7 @@ namespace TermuxBot.Common
 
                 this.Initialized = true;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 this.Logger.Log(LogLevel.Critical, "Unable to initialize plugins!");
                 throw;

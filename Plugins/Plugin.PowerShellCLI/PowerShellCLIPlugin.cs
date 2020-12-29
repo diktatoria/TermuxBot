@@ -138,10 +138,10 @@ namespace Plugin.PowerShellCLI
             return Task.CompletedTask;
         }
 
-        private void OnScript_Completed(object? sender, EventArgs e)
+        private void OnScript_Completed(object sender, EventArgs e)
         {
             var streamObjectsReceived = sender as PSDataCollection<InformationRecord>;
-            InformationRecord? currentStreamRecord = streamObjectsReceived.LastOrDefault();
+            InformationRecord currentStreamRecord = streamObjectsReceived.LastOrDefault();
 
             this.AssignedController.Logger.Log(LogLevel.Trace, $"TermuxBot-PowerShell: {currentStreamRecord.MessageData}");
         }
@@ -151,10 +151,10 @@ namespace Plugin.PowerShellCLI
         /// </summary>
         /// <param name="sender">The sender.</param>
         /// <param name="e">The <see cref="DataAddedEventArgs"/> instance containing the event data.</param>
-        private void OnScriptError_DataAdded(object? sender, DataAddedEventArgs e)
+        private void OnScriptError_DataAdded(object sender, DataAddedEventArgs e)
         {
             var streamObjectsReceived = sender as PSDataCollection<InformationRecord>;
-            InformationRecord? currentStreamRecord = streamObjectsReceived.LastOrDefault();
+            InformationRecord currentStreamRecord = streamObjectsReceived.LastOrDefault();
 
             this.AssignedController.Logger.Log(LogLevel.Error, $"{currentStreamRecord.MessageData}");
         }
@@ -164,10 +164,10 @@ namespace Plugin.PowerShellCLI
         /// </summary>
         /// <param name="sender">The sender.</param>
         /// <param name="e">The <see cref="DataAddedEventArgs"/> instance containing the event data.</param>
-        private void OnScriptInformation_DataAdded(object? sender, DataAddedEventArgs e)
+        private void OnScriptInformation_DataAdded(object sender, DataAddedEventArgs e)
         {
             var streamObjectsReceived = sender as PSDataCollection<InformationRecord>;
-            InformationRecord? currentStreamRecord = streamObjectsReceived.LastOrDefault();
+            InformationRecord currentStreamRecord = streamObjectsReceived.LastOrDefault();
 
             this.AssignedController.Logger.Log(LogLevel.Information, $"{currentStreamRecord.MessageData}");
         }
@@ -177,10 +177,10 @@ namespace Plugin.PowerShellCLI
         /// </summary>
         /// <param name="sender">The sender.</param>
         /// <param name="e">The <see cref="DataAddedEventArgs"/> instance containing the event data.</param>
-        private void OnScriptWarning_DataAdded(object? sender, DataAddedEventArgs e)
+        private void OnScriptWarning_DataAdded(object sender, DataAddedEventArgs e)
         {
             var streamObjectsReceived = sender as PSDataCollection<InformationRecord>;
-            InformationRecord? currentStreamRecord = streamObjectsReceived.LastOrDefault();
+            InformationRecord currentStreamRecord = streamObjectsReceived.LastOrDefault();
 
             this.AssignedController.Logger.Log(LogLevel.Warning, $"{currentStreamRecord.MessageData}");
         }
