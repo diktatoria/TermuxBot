@@ -15,21 +15,19 @@ namespace TermuxBot.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private Task _deamonTask;
         private DiscordDæmon _discordDeamon;
         private PluginController _pluginController;
 
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
-            _discordDeamon = new DiscordDæmon(logger);
 
             // Init Plugins
             _pluginController = new PluginController(logger);
 
             // Init Discord Deamon
-            _logger.Log(LogLevel.Information, "Starting Dicord Deamon...");
-            _discordDeamon.InitializeAsync(CancellationToken.None)
-                .ContinueWith(OnDeamon_Exited);
+            _discordDeamon = new DiscordDæmon(logger);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
@@ -38,11 +36,27 @@ namespace TermuxBot.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             if (!_pluginController.Initialized)
             {
                 _pluginController.InitializeAllPlugins("./").Wait();
+            }
+
+            if (!_discordDeamon.IsRunning)
+            {
+                _logger.Log(LogLevel.Information, "Starting Dicord Deamon...");
+                try
+                {
+                    _deamonTask = _discordDeamon.InitializeAsync(CancellationToken.None)
+                       .ContinueWith(OnDeamon_Exited);
+                }
+                catch (Exception e)
+                {
+                    _logger.Log(LogLevel.Error, e.Message);
+                    _logger.Log(LogLevel.Warning, e.StackTrace);
+                    throw;
+                }
             }
 
             return View();

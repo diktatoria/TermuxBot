@@ -25,18 +25,26 @@ namespace TermuxBot.Common
         {
             // TODO: Get all dlls from Plugin Folder
 
-            string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            Assembly assembly = Assembly.LoadFile(Path.Combine(directory, "Plugin.PowerShellCLI.dll"));
+            try
+            {
+                string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                Assembly assembly = Assembly.LoadFile(Path.Combine(directory, "Plugin.PowerShellCLI.dll"));
 
-            Type type = assembly.GetType("Plugin.PowerShellCLI.PowerShellCLIPlugin");
-            if (type == null) { return; }
+                Type type = assembly.GetType("Plugin.PowerShellCLI.PowerShellCLIPlugin");
+                if (type == null) { return; }
 
-            Plugin powerShellPlugin = await Task.Run(() => Activator.CreateInstance(type, this) as Plugin);
+                Plugin powerShellPlugin = await Task.Run(() => Activator.CreateInstance(type, this) as Plugin);
 
-            _runningTask = Task.Run(() => powerShellPlugin.Initialize(CancellationToken.None))
-                                .ContinueWith(OnPlugin_Exited);
+                _runningTask = Task.Run(() => powerShellPlugin.Initialize(CancellationToken.None))
+                    .ContinueWith(OnPlugin_Exited);
 
-            this.Initialized = true;
+                this.Initialized = true;
+            }
+            catch (Exception e)
+            {
+                this.Logger.Log(LogLevel.Critical, "Unable to initialize plugins!");
+                throw;
+            }
         }
 
         private void OnPlugin_Exited(Task obj)

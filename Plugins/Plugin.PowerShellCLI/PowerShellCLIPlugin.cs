@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Management.Automation;
 using System.Management.Automation.Runspaces;
@@ -32,8 +33,8 @@ namespace Plugin.PowerShellCLI
         {
             this.InitializeRunspaces(1, 10, new string[0]);
 
-            Task task = this.RunScript("Write-Verbose \"TEST\"" + Environment.NewLine +
-                                       "Write \"Everything done. Exiting...\"");
+            string scriptData = await File.ReadAllTextAsync("./TermuxInitializeScript.ps1", cancellationToken);
+            Task task = this.RunScript(scriptData);
 
             while (!cancellationToken.IsCancellationRequested)
             {
@@ -115,13 +116,7 @@ namespace Plugin.PowerShellCLI
             ps.Streams.Warning.DataAdded += this.OnScriptWarning_DataAdded;
             ps.Streams.Information.DataAdded += this.OnScriptInformation_DataAdded;
 
-            ps.Streams.Verbose.Completed += (sender, e) =>
-            {
-                var streamObjectsReceived = sender as PSDataCollection<InformationRecord>;
-                InformationRecord? currentStreamRecord = streamObjectsReceived.LastOrDefault();
-
-                this.AssignedController.Logger.Log(LogLevel.Trace, $"Verbose: {currentStreamRecord.MessageData}");
-            };
+            ps.Streams.Verbose.Completed += this.OnScript_Completed;
 
             // execute the script and await the result.
             PSDataCollection<PSObject> pipelineObjects = await ps.InvokeAsync().ConfigureAwait(false);
@@ -143,6 +138,14 @@ namespace Plugin.PowerShellCLI
             return Task.CompletedTask;
         }
 
+        private void OnScript_Completed(object? sender, EventArgs e)
+        {
+            var streamObjectsReceived = sender as PSDataCollection<InformationRecord>;
+            InformationRecord? currentStreamRecord = streamObjectsReceived.LastOrDefault();
+
+            this.AssignedController.Logger.Log(LogLevel.Trace, $"TermuxBot-PowerShell: {currentStreamRecord.MessageData}");
+        }
+
         /// <summary>
         /// Called when [script error data added].
         /// </summary>
@@ -150,6 +153,10 @@ namespace Plugin.PowerShellCLI
         /// <param name="e">The <see cref="DataAddedEventArgs"/> instance containing the event data.</param>
         private void OnScriptError_DataAdded(object? sender, DataAddedEventArgs e)
         {
+            var streamObjectsReceived = sender as PSDataCollection<InformationRecord>;
+            InformationRecord? currentStreamRecord = streamObjectsReceived.LastOrDefault();
+
+            this.AssignedController.Logger.Log(LogLevel.Error, $"{currentStreamRecord.MessageData}");
         }
 
         /// <summary>
@@ -159,6 +166,10 @@ namespace Plugin.PowerShellCLI
         /// <param name="e">The <see cref="DataAddedEventArgs"/> instance containing the event data.</param>
         private void OnScriptInformation_DataAdded(object? sender, DataAddedEventArgs e)
         {
+            var streamObjectsReceived = sender as PSDataCollection<InformationRecord>;
+            InformationRecord? currentStreamRecord = streamObjectsReceived.LastOrDefault();
+
+            this.AssignedController.Logger.Log(LogLevel.Information, $"{currentStreamRecord.MessageData}");
         }
 
         /// <summary>
@@ -168,6 +179,10 @@ namespace Plugin.PowerShellCLI
         /// <param name="e">The <see cref="DataAddedEventArgs"/> instance containing the event data.</param>
         private void OnScriptWarning_DataAdded(object? sender, DataAddedEventArgs e)
         {
+            var streamObjectsReceived = sender as PSDataCollection<InformationRecord>;
+            InformationRecord? currentStreamRecord = streamObjectsReceived.LastOrDefault();
+
+            this.AssignedController.Logger.Log(LogLevel.Warning, $"{currentStreamRecord.MessageData}");
         }
 
         /// <summary>

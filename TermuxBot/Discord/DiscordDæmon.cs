@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,23 +22,50 @@ namespace TermuxBot.Discord
 
         public async Task InitializeAsync(CancellationToken cancellationToken)
         {
-            _logger.Log(LogLevel.Information, "Starting Dicord Deamon...");
-
-            var discord = new DiscordClient(new DiscordConfiguration()
+            try
             {
-                Token = "NzkyMzcxNDE0MTY5OTQ0MDk1.X-cvYg.gFoJWnmHH10cHuXgL0723-e7QDk",
-                TokenType = TokenType.Bot       
-            });
+                _logger.Log(LogLevel.Information, "Starting Dicord Deamon...");
 
-            discord.MessageCreated += async (e) =>
+                // Read Token from file
+                string token = String.Empty;
+                if (File.Exists("./discord.token"))
+                {
+                    token = await File.ReadAllTextAsync("./discord.token", cancellationToken);
+                }
+                else
+                {
+                    File.Create("./discord.token");
+                    throw new FileNotFoundException($"Token in File '{Path.Combine(Environment.CurrentDirectory, "discord.token")}' not found! ");
+                }
+
+                var discord = new DiscordClient(new DiscordConfiguration()
+                {
+                    Token = token,
+                    TokenType = TokenType.Bot
+                });
+
+                discord.MessageCreated += async (e) =>
+                {
+                    if (e.Message.Content.ToLower().StartsWith("ping"))
+                        await e.Message.RespondAsync("pong!");
+                };
+
+                await discord.ConnectAsync();
+
+                this.IsRunning = true;
+
+                await Task.Delay(-1, cancellationToken);
+                this.IsRunning = false;
+            }
+            catch (Exception e)
             {
-                if (e.Message.Content.ToLower().StartsWith("ping")) 
-                    await e.Message.RespondAsync("pong!");
-            };
+                _logger.Log(LogLevel.Critical, $"Discord Dæmon exited: {e.Message}");
+                _logger.Log(LogLevel.Error, $"Exception occured: {e.StackTrace}");
 
-            await discord.ConnectAsync();
-            await Task.Delay(-1, cancellationToken);
+                throw;
+            }
         }
-    }
 
+        public bool IsRunning { get; private set; }
+    }
 }
