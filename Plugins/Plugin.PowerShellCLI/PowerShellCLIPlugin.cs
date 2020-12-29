@@ -36,7 +36,7 @@ namespace Plugin.PowerShellCLI
             string scriptData = await File.ReadAllTextAsync("./TermuxInitializeScript.ps1", cancellationToken);
             Task task = this.RunScript(scriptData);
 
-            while (!cancellationToken.IsCancellationRequested)
+            while (!cancellationToken.IsCancellationRequested) 6
             {
                 await Task.Delay(1000, cancellationToken);
             }

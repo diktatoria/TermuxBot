@@ -45,7 +45,6 @@ namespace TermuxBot.Controllers
 
             if (!_discordDeamon.IsRunning)
             {
-                _logger.Log(LogLevel.Information, "Starting Dicord Deamon...");
                 try
                 {
                     _deamonTask = _discordDeamon.InitializeAsync(CancellationToken.None)
