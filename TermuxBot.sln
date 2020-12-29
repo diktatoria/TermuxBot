@@ -19,7 +19,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TermuxBot.Common", "TermuxB
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TermuxBot.Tests", "TermuxBot.Tests\TermuxBot.Tests.csproj", "{36AE7456-1F63-4CAC-A292-F1E58ABCFF2E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugin.PowerShellCLI", "Plugins\Plugin.PowerShellCLI\Plugin.PowerShellCLI.csproj", "{51FA5E67-4AE6-4554-86C2-0B1100D373FF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Plugin.PowerShellCLI", "Plugins\Plugin.PowerShellCLI\Plugin.PowerShellCLI.csproj", "{51FA5E67-4AE6-4554-86C2-0B1100D373FF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Deployment", "Deployment", "{69BDD0BB-AA37-4313-BCC9-9FA0D21E821B}"
+	ProjectSection(SolutionItems) = preProject
+		Deployment\publish-to-dockerhub.ps1 = Deployment\publish-to-dockerhub.ps1
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{9207EA35-A630-4537-B0D4-E10BFC62F7BC}"
+	ProjectSection(SolutionItems) = preProject
+		Build\build-local.ps1 = Build\build-local.ps1
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
