@@ -10,6 +10,9 @@
 *.userosscache
 *.sln.docstates
 
+# Discord Bot token
+discord.token
+
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
