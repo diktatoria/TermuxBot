@@ -11,6 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.gitignore = .gitignore
 		LICENSE.md = LICENSE.md
 		README.md = README.md
+		TermuxBot.sln.DotSettings = TermuxBot.sln.DotSettings
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{9084F3FE-CA26-40E4-96CD-F14D564637E9}"

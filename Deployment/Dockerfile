@@ -9,11 +9,11 @@ EXPOSE 443
 # Build App
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
-COPY ["TermuxBot/TermuxBot.csproj", "TermuxBot/"]
-RUN dotnet restore "TermuxBot/TermuxBot.csproj"
+COPY ["./TermuxBot/TermuxBot.csproj", "./TermuxBot/"]
+#RUN dotnet restore "TermuxBot/TermuxBot.csproj"
 COPY . .
 WORKDIR "/src/TermuxBot"
-RUN dotnet build "TermuxBot.csproj" -c Release -o /app/build
+#RUN dotnet build "TermuxBot.csproj" -c Release -o /app/build
 
 # publish app
 FROM build AS publish
