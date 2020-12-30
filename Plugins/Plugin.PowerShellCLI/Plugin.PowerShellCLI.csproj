@@ -5,12 +5,12 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <OutputPath>..\..\bin\Debug</OutputPath>
+    <OutputPath>..\..\bin\Debug\Plugins</OutputPath>
     <DocumentationFile></DocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <OutputPath>..\..\bin\Release</OutputPath>
+    <OutputPath>..\..\bin\Release\Plugins</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>
@@ -23,4 +23,8 @@
   <ItemGroup>
     <ProjectReference Include="..\..\TermuxBot.API\TermuxBot.API.csproj" />
   </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="MKDIR ..\..\bin\$(ConfigurationName)\net5.0\Plugins&#xD;&#xA;Copy $(TargetPath) ..\..\bin\$(ConfigurationName)\net5.0\Plugins\$(TargetName).dll&#xD;&#xA;Copy $(TargetPath) ..\..\bin\$(ConfigurationName)\net5.0\Plugins\$(TargetName).pdb&#xD;&#xA;Copy $(TargetPath) ..\..\bin\$(ConfigurationName)\net5.0\Plugins\$(TargetName).deps.json" />
+  </Target>
 </Project>

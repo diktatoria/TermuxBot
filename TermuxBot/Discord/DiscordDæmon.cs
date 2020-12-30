@@ -27,16 +27,25 @@ namespace TermuxBot.Discord
             {
                 _logger.Log(LogLevel.Information, "Starting Dicord Deamon...");
 
-                // Read Token from file
-                string token = String.Empty;
-                if (File.Exists("./discord.token"))
+                // Try to read token from Environment variable
+                string token = Environment.GetEnvironmentVariable("BOT_TOKEN");
+
+                // If no variable set, read Token from file
+                if (String.IsNullOrEmpty(token))
                 {
-                    token = await File.ReadAllTextAsync("./discord.token", cancellationToken);
+                    if (File.Exists("./discord.token"))
+                    {
+                        token = await File.ReadAllTextAsync("./discord.token", cancellationToken);
+                    }
+                    else
+                    {
+                        File.Create("./discord.token");
+                        throw new FileNotFoundException($"Token in File '{Path.Combine(Environment.CurrentDirectory, "discord.token")}' not found! ");
+                    }
                 }
                 else
                 {
-                    File.Create("./discord.token");
-                    throw new FileNotFoundException($"Token in File '{Path.Combine(Environment.CurrentDirectory, "discord.token")}' not found! ");
+                    await File.WriteAllTextAsync("./discord.token", token, cancellationToken);
                 }
 
                 var discord = new DiscordClient(new DiscordConfiguration()

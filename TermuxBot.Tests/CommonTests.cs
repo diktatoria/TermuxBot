@@ -19,7 +19,7 @@ namespace TermuxBot.Tests
             Logger<Controller> ctrl = new Logger<Controller>(factory);
             PluginController controller = new PluginController(ctrl);
 
-            PowerShellCLIPlugin plugin = new(controller);
+            PowerShellCLIPlugin plugin = new(ctrl);
             await plugin.Initialize(new CancellationTokenSource(TimeSpan.FromSeconds(5)).Token);
         }
     }

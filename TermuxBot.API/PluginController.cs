@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
+using System.Runtime.Loader;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,6 +14,7 @@ namespace TermuxBot.API
 {
     public class PluginController
     {
+        private PluginAssemblyLoadContext _pluginLoadContext;
         private Task _runningTask;
 
         public PluginController(ILogger<Controller> logger)
@@ -23,17 +26,27 @@ namespace TermuxBot.API
 
         public async Task InitializeAllPlugins(string pluginFolder)
         {
-            // TODO: Get all dlls from Plugin Folder
-
             try
             {
-                string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                Assembly assembly = Assembly.LoadFile(Path.Combine(directory, "Plugin.PowerShellCLI.dll"));
+                string directory = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Plugins");
 
+                _pluginLoadContext = new PluginAssemblyLoadContext("Plugin Context", directory);
+                Assembly assembly = _pluginLoadContext.LoadFromAssemblyPath(Path.Combine(directory, "Plugin.PowerShellCLI.dll"));
+
+                // TODO: Query all types derived from Plugin
                 Type type = assembly.GetType("Plugin.PowerShellCLI.PowerShellCLIPlugin");
                 if (type == null) { return; }
 
-                Plugin powerShellPlugin = await Task.Run(() => Activator.CreateInstance(type, this) as Plugin);
+                var constructors = type.GetConstructors();
+                var relevantConstructor = constructors.FirstOrDefault();
+
+                if (relevantConstructor == null)
+                {
+                    this.Logger.Log(LogLevel.Error, $"Unable to load plugin '{"Plugin.PowerShellCLI.PowerShellCLIPlugin"}'");
+                    return;
+                }
+
+                Plugin powerShellPlugin = relevantConstructor.Invoke(new object[] { null }) as Plugin;
 
                 this.Initialized = true;
 

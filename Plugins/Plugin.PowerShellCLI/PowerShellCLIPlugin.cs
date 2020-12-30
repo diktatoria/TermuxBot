@@ -6,6 +6,7 @@ using System.Management.Automation;
 using System.Management.Automation.Runspaces;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerShell;
 using TermuxBot.API;
@@ -20,8 +21,8 @@ namespace Plugin.PowerShellCLI
     {
         /// <summary>Initializes a new instance of the <see cref="PowerShellCLIPlugin" /> class.</summary>
         /// <param name="assignedController">The assigned controller.</param>
-        public PowerShellCLIPlugin(PluginController assignedController)
-            : base(assignedController)
+        public PowerShellCLIPlugin(ILogger<Controller> logger)
+            : base(logger)
         {
         }
 
@@ -143,7 +144,7 @@ namespace Plugin.PowerShellCLI
             var streamObjectsReceived = sender as PSDataCollection<InformationRecord>;
             InformationRecord currentStreamRecord = streamObjectsReceived.LastOrDefault();
 
-            this.AssignedController.Logger.Log(LogLevel.Trace, $"TermuxBot-PowerShell: {currentStreamRecord.MessageData}");
+            this.Logger?.Log(LogLevel.Trace, $"TermuxBot-PowerShell: {currentStreamRecord.MessageData}");
         }
 
         /// <summary>
@@ -156,7 +157,7 @@ namespace Plugin.PowerShellCLI
             var streamObjectsReceived = sender as PSDataCollection<InformationRecord>;
             InformationRecord currentStreamRecord = streamObjectsReceived.LastOrDefault();
 
-            this.AssignedController.Logger.Log(LogLevel.Error, $"{currentStreamRecord.MessageData}");
+            this.Logger?.Log(LogLevel.Error, $"{currentStreamRecord.MessageData}");
         }
 
         /// <summary>
@@ -169,7 +170,7 @@ namespace Plugin.PowerShellCLI
             var streamObjectsReceived = sender as PSDataCollection<InformationRecord>;
             InformationRecord currentStreamRecord = streamObjectsReceived.LastOrDefault();
 
-            this.AssignedController.Logger.Log(LogLevel.Information, $"{currentStreamRecord.MessageData}");
+            this.Logger?.Log(LogLevel.Information, $"{currentStreamRecord.MessageData}");
         }
 
         /// <summary>
@@ -182,7 +183,7 @@ namespace Plugin.PowerShellCLI
             var streamObjectsReceived = sender as PSDataCollection<InformationRecord>;
             InformationRecord currentStreamRecord = streamObjectsReceived.LastOrDefault();
 
-            this.AssignedController.Logger.Log(LogLevel.Warning, $"{currentStreamRecord.MessageData}");
+            this.Logger?.Log(LogLevel.Warning, $"{currentStreamRecord.MessageData}");
         }
 
         /// <summary>
