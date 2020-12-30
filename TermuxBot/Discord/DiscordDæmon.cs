@@ -14,6 +14,8 @@ namespace TermuxBot.Discord
 {
     public class DiscordDæmon
     {
+        public static readonly string[] TermuxPrefixes = new string[] { "termux ", "$ " };
+
         private ILogger<HomeController> _logger;
 
         public DiscordDæmon(ILogger<HomeController> logger)
@@ -76,12 +78,13 @@ namespace TermuxBot.Discord
         {
             if (e.Author.Username == "Termux") { return; }
 
-            if (!e.Channel.IsPrivate && !e.Message.Content.ToLower().StartsWith("termux ")) { return; }
+            if (!e.Channel.IsPrivate && TermuxPrefixes.All(curPrefix => !e.Message.Content.ToLower().StartsWith(curPrefix))) { return; }
 
             string message = e.Message.Content.ToLower();
-            if (message.StartsWith("termux "))
+            string usedPrefix = TermuxPrefixes.FirstOrDefault(curPrefix => message.StartsWith(curPrefix));
+            if (!String.IsNullOrEmpty(usedPrefix))
             {
-                message = message.Replace("termux ", "");
+                message = message.Replace(usedPrefix, "");
             }
 
             if (message.StartsWith("ping"))
