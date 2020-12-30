@@ -31,9 +31,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{9207EA35
 		Build\build-local.ps1 = Build\build-local.ps1
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TermuxBot.API", "TermuxBot.API\TermuxBot.API.csproj", "{A2598969-7E88-411A-A835-C2476306A407}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TermuxBot.API", "TermuxBot.API\TermuxBot.API.csproj", "{A2598969-7E88-411A-A835-C2476306A407}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TermuxBot.Common", "TermuxBot.Common\TermuxBot.Common.csproj", "{3E71FD69-95C7-4E1A-BF3A-CF6DF3A9B8CD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{8FAB702C-EB56-4C21-94EB-DC463014C510}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{8618DD51-05F5-43AB-ADBE-7D1F010F4476}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\dotnet.yml = .github\workflows\dotnet.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -67,6 +74,7 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{51FA5E67-4AE6-4554-86C2-0B1100D373FF} = {9084F3FE-CA26-40E4-96CD-F14D564637E9}
+		{8618DD51-05F5-43AB-ADBE-7D1F010F4476} = {8FAB702C-EB56-4C21-94EB-DC463014C510}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {279ECC99-4D47-4DEB-A4E8-4F3558D59956}
