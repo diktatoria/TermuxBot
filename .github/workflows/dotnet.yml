@@ -8,6 +8,6 @@ jobs:
     - uses: actions/checkout@v2
     - run: dir
     - name: Build
-      run: dotnet build --verbosity diag
+      run: dotnet build --verbosity normal
     - name: Test
       run: dotnet test --no-build --verbosity normal
