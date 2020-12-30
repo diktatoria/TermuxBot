@@ -12,3 +12,4 @@ Copy $targetPath "$solutionDirbin\$configurationName\net5.0\Plugins\$targetName.
 Copy $targetPath "$solutionDirbin\$configurationName\net5.0\Plugins\$targetName.deps.json"
 
 write "Copy sucessful."
+exit 0
