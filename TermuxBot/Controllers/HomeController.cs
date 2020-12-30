@@ -40,7 +40,7 @@ namespace TermuxBot.Controllers
         {
             if (!_pluginController.Initialized)
             {
-                _pluginController.InitializeAllPlugins("./").Wait();
+                _pluginController.InitializeAllPlugins("Plugins").Wait();
             }
 
             if (!_discordDeamon.IsRunning)
