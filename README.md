@@ -4,7 +4,7 @@ Its purpose is to provide a Terminal-Like Interface over the Discord App.
 
 Its originally written for the Diktoria server, but feel free to host a instance for your own server, too.
 
-![.NET](https://github.com/diktatoria/TermuxBot/workflows/.NET/badge.svg)
+![.NET-CI](https://github.com/diktatoria/TermuxBot/workflows/.NET-CI/badge.svg)
 
 ### Getting started
 Just configure your Bot Token and start the server.
