@@ -19,11 +19,14 @@ namespace Plugin.PowerShellCLI
     /// <seealso cref="TermuxBot.Common.Plugin" />
     public class PowerShellCLIPlugin : TermuxBot.API.Plugin
     {
-        /// <summary>Initializes a new instance of the <see cref="PowerShellCLIPlugin" /> class.</summary>
-        /// <param name="assignedController">The assigned controller.</param>
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PowerShellCLIPlugin" /> class.
+        /// </summary>
+        /// <param name="logger">The logger.</param>
         public PowerShellCLIPlugin(ILogger<Controller> logger)
             : base(logger)
         {
+            logger.LogInformation("Creating Plugin Plugin.PowerShellCLI.PowerShellCLIPlugin");
         }
 
         /// <summary>
@@ -83,6 +86,18 @@ namespace Plugin.PowerShellCLI
             // this will start by initializing the minimum number of runspaces.
 
             this.RsPool.Open();
+        }
+
+        public override async Task Invoke(string command, TextWriter outputStream)
+        {
+            if (command == "get-help")
+            {
+                await outputStream.WriteAsync("No help available.");
+            }
+            else
+            {
+                await outputStream.WriteAsync("Command not found");
+            }
         }
 
         /// <summary>

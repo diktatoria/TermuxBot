@@ -5,8 +5,10 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using DSharpPlus;
+using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using Microsoft.Extensions.Logging;
+using TermuxBot.API;
 using TermuxBot.Controllers;
 using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
@@ -17,10 +19,12 @@ namespace TermuxBot.Discord
         public static readonly string[] TermuxPrefixes = new string[] { "termux ", "$ " };
 
         private ILogger<HomeController> _logger;
+        private IPluginController _pluginController;
 
-        public DiscordDæmon(ILogger<HomeController> logger)
+        public DiscordDæmon(ILogger<HomeController> logger, IPluginController pluginController)
         {
             _logger = logger;
+            _pluginController = pluginController;
         }
 
         public async Task InitializeAsync(CancellationToken cancellationToken)
@@ -82,44 +86,70 @@ namespace TermuxBot.Discord
 
             string message = e.Message.Content.ToLower();
             string usedPrefix = TermuxPrefixes.FirstOrDefault(curPrefix => message.StartsWith(curPrefix));
+            string responseText = String.Empty;
+            DiscordMessage response = null;
+
+            responseText = $"```{message}" + Environment.NewLine;
+
             if (!String.IsNullOrEmpty(usedPrefix))
             {
                 message = message.Replace(usedPrefix, "");
             }
 
-            if (message.StartsWith("ping"))
+            // Message is added to response
+            if (!e.Channel.IsPrivate) { await e.Message.DeleteAsync(); }
+
+            if (message.StartsWith("ping "))
             {
-                await e.Message.RespondAsync("pong!");
+                responseText += $"Pinging Termux [::1] with 32 bytes of data:```";
+                response = await e.Message.RespondAsync(responseText);
+                for (int i = 0; i < 4; i++)
+                {
+                    await Task.Delay(500);
+
+                    responseText = responseText.Remove(responseText.Length - 3, 3) + Environment.NewLine + $"Reply from ::1: time<1ms```";
+                    await response.ModifyAsync(responseText);
+                }
                 return;
             }
 
             if (message.StartsWith("help"))
             {
-                await e.Message.RespondAsync("TermuX Console Bot");
-                await e.Message.RespondAsync("Send me some Console Commands, e. g.:");
-                await e.Message.RespondAsync("PS Get-Help" + Environment.NewLine +
-                                                    "Bash help" + Environment.NewLine +
-                                                    "CMD HELP" + Environment.NewLine);
+                responseText += "TermuX Console Bot 1.0.0" + Environment.NewLine +
+                                "Send me some Console Commands, e. g.:" + Environment.NewLine +
+                                "PS Get-Help" + Environment.NewLine +
+                                "Bash help" + Environment.NewLine +
+                                "CMD HELP```";
+
+                response = await e.Message.RespondAsync(responseText);
                 return;
             }
 
+            // Plugin handling
+            TextWriter answerTextWriter = new StringWriter();
             if (message.StartsWith("ps "))
             {
-                await e.Message.RespondAsync("Powershell plugin has not been loaded.");
+                await _pluginController.Invoke(message, answerTextWriter);
+
+                responseText += $"{answerTextWriter}```";
+                if (!String.IsNullOrEmpty(answerTextWriter.ToString())) { response = await e.Message.RespondAsync(responseText); }
+
                 return;
             }
 
             if (message.StartsWith("bash "))
             {
-                await e.Message.RespondAsync("Bash Linux console have not yet been implemented.");
+                await e.Message.RespondAsync("```Bash Linux console have not yet been implemented.```");
                 return;
             }
 
             if (message.StartsWith("cmd "))
             {
-                await e.Message.RespondAsync("CMD Windows console have not yet been implemented.");
+                await e.Message.RespondAsync("```CMD Windows console have not yet been implemented.```");
                 return;
             }
+
+            await e.Message.RespondAsync("```Unknown Command.```");
         }
 
         public bool IsRunning { get; private set; }

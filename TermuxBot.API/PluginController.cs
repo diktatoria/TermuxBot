@@ -12,7 +12,7 @@ using Microsoft.Extensions.Logging;
 
 namespace TermuxBot.API
 {
-    public class PluginController
+    public class PluginController : IPluginController
     {
         private PluginAssemblyLoadContext _pluginLoadContext;
         private Task _runningTask;
@@ -37,16 +37,17 @@ namespace TermuxBot.API
                 Type type = assembly.GetType("Plugin.PowerShellCLI.PowerShellCLIPlugin");
                 if (type == null) { return; }
 
-                var constructors = type.GetConstructors();
-                var relevantConstructor = constructors.FirstOrDefault();
+                //var constructors = type.GetConstructors();
+                //var relevantConstructor = constructors.LastOrDefault();
 
-                if (relevantConstructor == null)
-                {
-                    this.Logger.Log(LogLevel.Error, $"Unable to load plugin '{"Plugin.PowerShellCLI.PowerShellCLIPlugin"}'");
-                    return;
-                }
+                //if (relevantConstructor == null)
+                //{
+                //    this.Logger.Log(LogLevel.Error, $"Unable to load plugin '{"Plugin.PowerShellCLI.PowerShellCLIPlugin"}'");
+                //    return;
+                //}
 
-                Plugin powerShellPlugin = relevantConstructor.Invoke(new object[] { null }) as Plugin;
+                Plugin powerShellPlugin = Activator.CreateInstance(type, this.Logger) as Plugin;
+                this.InstanciatedPlugins.Add(powerShellPlugin);
 
                 this.Initialized = true;
 
@@ -70,12 +71,19 @@ namespace TermuxBot.API
             }
         }
 
+        public async Task Invoke(string command, TextWriter outputStream)
+        {
+            foreach (Plugin instanciatedPlugin in this.InstanciatedPlugins)
+            {
+                await instanciatedPlugin.Invoke(command, outputStream);
+            }
+        }
+
         private void OnPlugin_Exited(Task obj)
         {
         }
 
         public bool Initialized { get; private set; }
-
         public List<Plugin> InstanciatedPlugins { get; }
         public ILogger<Controller> Logger { get; }
     }

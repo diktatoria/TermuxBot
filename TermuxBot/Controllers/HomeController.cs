@@ -27,7 +27,7 @@ namespace TermuxBot.Controllers
             _pluginController = new PluginController(logger);
 
             // Init Discord Deamon
-            _discordDeamon = new DiscordDæmon(logger);
+            _discordDeamon = new DiscordDæmon(logger, _pluginController);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

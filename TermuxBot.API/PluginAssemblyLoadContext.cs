@@ -25,7 +25,7 @@ namespace TermuxBot.API
         /// <returns>
         /// The loaded assembly, or <see langword="null" />.
         /// </returns>
-        protected override Assembly? Load(AssemblyName assemblyName)
+        protected override Assembly Load(AssemblyName assemblyName)
         {
             // Do not load API twice...
             if (assemblyName.Name == "TermuxBot.API")

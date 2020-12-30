@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -14,6 +15,8 @@ namespace TermuxBot.API
         }
 
         public abstract Task Initialize(CancellationToken cancellationToken);
+
+        public abstract Task Invoke(string command, TextWriter outputStream);
 
         public abstract Task Unload();
 
