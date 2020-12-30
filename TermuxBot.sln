@@ -29,6 +29,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{9207EA35-A630-4537-B0D4-E10BFC62F7BC}"
 	ProjectSection(SolutionItems) = preProject
 		Build\build-local.ps1 = Build\build-local.ps1
+		Build\copy-plugins.ps1 = Build\copy-plugins.ps1
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TermuxBot.API", "TermuxBot.API\TermuxBot.API.csproj", "{A2598969-7E88-411A-A835-C2476306A407}"
