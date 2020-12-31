@@ -28,6 +28,6 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="Powershell $(SolutionDir)Build/copy-plugins.ps1 $(SolutionDir) $(ConfigurationName) $(TargetName) $(TargetPath)" />
+    <Exec Command="if &quot;$(ConfigurationName)&quot; == &quot;Debug&quot; Powershell  -ExecutionPolicy Unrestricted -Command &quot;$(SolutionDir)Build/copy-plugins.ps1 $(SolutionDir) $(ConfigurationName) $(TargetName) $(TargetPath)&quot;" />
   </Target>
 </Project>

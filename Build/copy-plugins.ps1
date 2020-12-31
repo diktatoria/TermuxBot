@@ -1,9 +1,9 @@
 param ($solutionDir, $configurationName, $targetName, $targetPath)
 
-$pluginDir = "$solutionDirbin\$configurationName\net5.0\Plugins"
+$pluginDir = "${solutionDir}bin\$configurationName\net5.0\Plugins"
 
 write "Running on $env:OS ..."
-write "Copy Plugins to App directory '$pluginDir' ..."
+write "Copy Plugins to App directory $pluginDir ..."
 
 rm -Recurse "$pluginDir"
 mkdir "$pluginDir"

@@ -14,6 +14,7 @@ WORKDIR "/src/TermuxBot"
 RUN dotnet build "TermuxBot.csproj" -c Release -o /app/build
 
 FROM build AS publish
+COPY ["bin/Debug/Plugins/net5.0", "bin/Debug/net5.0/Plugins"]
 RUN dotnet publish "TermuxBot.csproj" -c Release -o /app/publish
 
 FROM base AS final
