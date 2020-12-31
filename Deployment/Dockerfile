@@ -21,7 +21,7 @@ WORKDIR /src
 RUN dotnet publish "TermuxBot.sln" -c Release -o /app/publish
 
 # Copy Plugin directory to publish folder
-#  COPY ["/app/build/Plugins", "/app/publish/Plugins"]
+# COPY ["/app/publish/Plugin.PowerShellCLI.dll", "/app/publish/Plugin/Plugin.PowerShellCLI.dll"]
 
 # run app
 FROM base AS final
