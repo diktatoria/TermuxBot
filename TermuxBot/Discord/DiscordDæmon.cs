@@ -64,6 +64,12 @@ namespace TermuxBot.Discord
 
                 await discord.ConnectAsync();
 
+                // Set Initial Bot Status
+                var game = new DiscordGame("Powershell");
+                game.State = "Spielt";
+
+                await discord.UpdateStatusAsync(game);
+
                 this.IsRunning = true;
 
                 await Task.Delay(-1, cancellationToken);
