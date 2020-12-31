@@ -26,7 +26,7 @@ namespace Plugin.PowerShellCLI
         /// Initializes a new instance of the <see cref="PowerShellCLIPlugin" /> class.
         /// </summary>
         /// <param name="logger">The logger.</param>
-        public PowerShellCLIPlugin(ILogger<Controller> logger)
+        public PowerShellCLIPlugin(ILogger logger)
             : base(logger)
         {
             logger.LogInformation("Creating Plugin Plugin.PowerShellCLI.PowerShellCLIPlugin");
@@ -76,14 +76,14 @@ namespace Plugin.PowerShellCLI
             // use the runspace factory to create a pool of runspaces
             // with a minimum and maximum number of runspaces to maintain.
 
-            this.RsPool = RunspaceFactory.CreateRunspacePool(defaultSessionState);
-            this.RsPool.SetMinRunspaces(minRunspaces);
-            this.RsPool.SetMaxRunspaces(maxRunspaces);
+            //this.RsPool = RunspaceFactory.CreateRunspacePool(defaultSessionState);
+            //this.RsPool.SetMinRunspaces(minRunspaces);
+            //this.RsPool.SetMaxRunspaces(maxRunspaces);
 
             // set the pool options for thread use.
             // we can throw away or re-use the threads depending on the usage scenario.
 
-            this.RsPool.ThreadOptions = PSThreadOptions.UseNewThread;
+            //this.RsPool.ThreadOptions = PSThreadOptions.UseNewThread;
 
             // open the pool.
             // this will start by initializing the minimum number of runspaces.

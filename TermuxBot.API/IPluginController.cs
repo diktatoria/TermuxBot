@@ -15,6 +15,6 @@ namespace TermuxBot.API
 
         public List<Plugin> InstanciatedPlugins { get; }
 
-        public ILogger<Controller> Logger { get; }
+        public ILogger Logger { get; }
     }
 }

@@ -17,7 +17,7 @@ namespace TermuxBot.API
         private PluginAssemblyLoadContext _pluginLoadContext;
         private Task _runningTask;
 
-        public PluginController(ILogger<Controller> logger)
+        public PluginController(ILogger logger)
         {
             this.InstanciatedPlugins = new List<Plugin>();
 
@@ -26,50 +26,42 @@ namespace TermuxBot.API
 
         public async Task InitializeAllPlugins(string pluginFolder)
         {
-            try
-            {
-                // string directory = Path.Combine(Environment.CurrentDirectory, pluginFolder);
-                string directory = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), pluginFolder);
+            // string directory = Path.Combine(Environment.CurrentDirectory, pluginFolder);
+            string directory = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), pluginFolder);
 
-                _pluginLoadContext = new PluginAssemblyLoadContext("Plugin Context", directory);
-                Assembly assembly = _pluginLoadContext.LoadFromAssemblyPath(Path.Combine(directory, "Plugin.PowerShellCLI.dll"));
+            _pluginLoadContext = new PluginAssemblyLoadContext("Plugin Context", directory);
+            Assembly assembly = _pluginLoadContext.LoadFromAssemblyPath(Path.Combine(directory, "Plugin.PowerShellCLI.dll"));
 
-                // TODO: Query all types derived from Plugin
-                Type type = assembly.GetType("Plugin.PowerShellCLI.PowerShellCLIPlugin");
-                if (type == null) { return; }
+            // TODO: Query all types derived from Plugin
+            Type type = assembly.GetType("Plugin.PowerShellCLI.PowerShellCLIPlugin");
+            if (type == null) { return; }
 
-                //var constructors = type.GetConstructors();
-                //var relevantConstructor = constructors.LastOrDefault();
+            //var constructors = type.GetConstructors();
+            //var relevantConstructor = constructors.LastOrDefault();
 
-                //if (relevantConstructor == null)
-                //{
-                //    this.Logger.Log(LogLevel.Error, $"Unable to load plugin '{"Plugin.PowerShellCLI.PowerShellCLIPlugin"}'");
-                //    return;
-                //}
+            //if (relevantConstructor == null)
+            //{
+            //    this.Logger.Log(LogLevel.Error, $"Unable to load plugin '{"Plugin.PowerShellCLI.PowerShellCLIPlugin"}'");
+            //    return;
+            //}
 
-                Plugin powerShellPlugin = Activator.CreateInstance(type, this.Logger) as Plugin;
-                this.InstanciatedPlugins.Add(powerShellPlugin);
+            Plugin powerShellPlugin = Activator.CreateInstance(type, this.Logger) as Plugin;
+            this.InstanciatedPlugins.Add(powerShellPlugin);
 
-                this.Initialized = true;
+            this.Initialized = true;
 
-                _runningTask = Task.Run(() => powerShellPlugin.Initialize(CancellationToken.None))
-                    .ContinueWith(task =>
+            _runningTask = Task.Run(() => powerShellPlugin.Initialize(CancellationToken.None))
+                .ContinueWith(task =>
+                {
+                    if (task.IsCompletedSuccessfully)
                     {
-                        if (task.IsCompletedSuccessfully)
-                        {
-                            OnPlugin_Exited(task);
-                            return;
-                        }
+                        OnPlugin_Exited(task);
+                        return;
+                    }
 
-                        this.Logger.Log(LogLevel.Critical, "Unable to initialize plugin 'Plugin.PowerShellCLI.PowerShellCLIPlugin'");
-                        this.Logger.Log(LogLevel.Error, task.Exception?.StackTrace);
-                    });
-            }
-            catch (Exception)
-            {
-                this.Logger.Log(LogLevel.Critical, "Unable to initialize plugins!");
-                throw;
-            }
+                    this.Logger.Log(LogLevel.Critical, "Unable to initialize plugin 'Plugin.PowerShellCLI.PowerShellCLIPlugin'");
+                    this.Logger.Log(LogLevel.Error, task.Exception?.StackTrace);
+                });
         }
 
         public async Task Invoke(string command, TextWriter outputStream)
@@ -86,6 +78,6 @@ namespace TermuxBot.API
 
         public bool Initialized { get; private set; }
         public List<Plugin> InstanciatedPlugins { get; }
-        public ILogger<Controller> Logger { get; }
+        public ILogger Logger { get; }
     }
 }

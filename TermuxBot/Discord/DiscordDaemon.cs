@@ -15,14 +15,14 @@ using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace TermuxBot.Discord
 {
-    public class DiscordDæmon
+    public class DiscordDaemon
     {
         public static readonly string[] TermuxPrefixes = new string[] { "termux ", "$ " };
 
-        private ILogger<HomeController> _logger;
+        private ILogger _logger;
         private IPluginController _pluginController;
 
-        public DiscordDæmon(ILogger<HomeController> logger, IPluginController pluginController)
+        public DiscordDaemon(ILogger logger, IPluginController pluginController)
         {
             _logger = logger;
             _pluginController = pluginController;

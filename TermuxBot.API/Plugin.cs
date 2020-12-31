@@ -9,7 +9,7 @@ namespace TermuxBot.API
 {
     public abstract class Plugin
     {
-        public Plugin(ILogger<Controller> logger)
+        public Plugin(ILogger logger)
         {
             this.Logger = logger;
         }
@@ -20,6 +20,6 @@ namespace TermuxBot.API
 
         public abstract Task Unload();
 
-        public ILogger<Controller> Logger { get; }
+        public ILogger Logger { get; }
     }
 }
