@@ -9,6 +9,7 @@ using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using Microsoft.Extensions.Logging;
 using TermuxBot.API;
+using TermuxBot.Common;
 using TermuxBot.Controllers;
 using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
@@ -105,6 +106,16 @@ namespace TermuxBot.Discord
             // Message is added to response
             if (!e.Channel.IsPrivate) { await e.Message.DeleteAsync(); }
 
+            // Check if it is permitted to execute commands in this channel
+            string[] allowedChannels = new string[] { "terminal" };
+            if (!e.Channel.IsPrivate && !allowedChannels.Contains(e.Channel.Name))
+            {
+                responseText += $"Command execution is not allowed in this channel." + Environment.NewLine +
+                                $"Please use channel(s) '{allowedChannels.ToDelimiterSeparatedString()}' or send me a PM```";
+                response = await e.Message.RespondAsync(responseText);
+                return;
+            }
+
             if (message.StartsWith("ping "))
             {
                 responseText += $"Pinging Termux [::1] with 32 bytes of data:```";
@@ -155,7 +166,8 @@ namespace TermuxBot.Discord
                 return;
             }
 
-            await e.Message.RespondAsync("```Unknown Command.```");
+            responseText += "Unknown Command.```";
+            await e.Message.RespondAsync(responseText);
         }
 
         public bool IsRunning { get; private set; }

@@ -23,5 +23,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TermuxBot.API\TermuxBot.API.csproj" />
+    <ProjectReference Include="..\TermuxBot.Common\TermuxBot.Common.csproj" />
   </ItemGroup>
 </Project>
