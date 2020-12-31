@@ -19,7 +19,7 @@ namespace TermuxBot.Tests
             Logger<Controller> ctrl = new Logger<Controller>(factory);
             PluginController controller = new PluginController(ctrl);
 
-            controller.InitializeAllPlugins("./");
+            controller.InitializeAllPlugins("");
         }
     }
 }

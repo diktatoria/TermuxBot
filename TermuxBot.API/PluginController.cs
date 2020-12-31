@@ -28,7 +28,8 @@ namespace TermuxBot.API
         {
             try
             {
-                string directory = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), pluginFolder);
+                // string directory = Path.Combine(Environment.CurrentDirectory, pluginFolder);
+                string directory = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), pluginFolder);
 
                 _pluginLoadContext = new PluginAssemblyLoadContext("Plugin Context", directory);
                 Assembly assembly = _pluginLoadContext.LoadFromAssemblyPath(Path.Combine(directory, "Plugin.PowerShellCLI.dll"));

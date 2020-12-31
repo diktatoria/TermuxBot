@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 using System.IO;
 using System.Linq;
 using System.Management.Automation;
@@ -19,6 +20,8 @@ namespace Plugin.PowerShellCLI
     /// <seealso cref="TermuxBot.Common.Plugin" />
     public class PowerShellCLIPlugin : TermuxBot.API.Plugin
     {
+        private TextWriter _currentOutputStream;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="PowerShellCLIPlugin" /> class.
         /// </summary>
@@ -35,17 +38,17 @@ namespace Plugin.PowerShellCLI
         /// <param name="cancellationToken">The cancellation token.</param>
         public override async Task Initialize(CancellationToken cancellationToken)
         {
-            this.InitializeRunspaces(1, 10, new string[0]);
+            this.InitializeRunspaces(1, 10, new string[] { "PSReadline" });
 
-            string scriptData = await File.ReadAllTextAsync("./TermuxInitializeScript.ps1", cancellationToken);
-            Task task = this.RunScript(scriptData);
+            // string scriptData = await File.ReadAllTextAsync("./TermuxInitializeScript.ps1", cancellationToken);
+            // Task task = this.RunScript(scriptData);
 
             while (!cancellationToken.IsCancellationRequested)
             {
                 await Task.Delay(1000, cancellationToken);
             }
 
-            await task;
+            //await task;
 
             cancellationToken.ThrowIfCancellationRequested();
         }
@@ -85,19 +88,25 @@ namespace Plugin.PowerShellCLI
             // open the pool.
             // this will start by initializing the minimum number of runspaces.
 
-            this.RsPool.Open();
+            // this.RsPool.Open();
         }
 
         public override async Task Invoke(string command, TextWriter outputStream)
         {
-            if (command == "get-help")
-            {
-                await outputStream.WriteAsync("No help available.");
-            }
-            else
-            {
-                await outputStream.WriteAsync("Command not found");
-            }
+            if (!command.StartsWith("ps ")) { return; }
+
+            string truncatedCommand = command.Remove(0, 3);
+
+            await this.RunScript(truncatedCommand, null, outputStream);
+
+            //if (truncatedCommand == "get-help")
+            //{
+            //    await outputStream.WriteAsync("No help available.");
+            //}
+            //else
+            //{
+            //    await outputStream.WriteAsync("Command not found");
+            //}
         }
 
         /// <summary>
@@ -106,42 +115,58 @@ namespace Plugin.PowerShellCLI
         /// <param name="scriptContents">The script file contents.</param>
         /// <param name="scriptParameters">The script parameters.</param>
         /// <exception cref="ApplicationException">Runspace Pool must be initialized before calling RunScript().</exception>
-        public async Task RunScript(string scriptContents, Dictionary<string, object> scriptParameters = null)
+        public async Task RunScript(string scriptContents, Dictionary<string, object> scriptParameters = null, TextWriter outputStream = null)
         {
-            if (this.RsPool == null)
+            _currentOutputStream = outputStream;
+
+            try
             {
-                throw new ApplicationException("Runspace Pool must be initialized before calling RunScript().");
+                if (this.RsPool == null)
+                {
+                    throw new ApplicationException("Runspace Pool must be initialized before calling RunScript().");
+                }
+
+                // create a new hosted PowerShell instance using a custom runspace.
+                // wrap in a using statement to ensure resources are cleaned up.
+
+                using var ps = PowerShell.Create();
+
+                // use the runspace pool.
+                // ps.RunspacePool = this.RsPool;
+
+                // specify the script code to run.
+                ps.AddScript(scriptContents);
+
+                // specify the parameters to pass into the script.
+                if (scriptParameters != null)
+                {
+                    ps.AddParameters(scriptParameters);
+                }
+
+                // subscribe to events from some of the streams
+                ps.Streams.Error.DataAdded += this.OnScriptError_DataAdded;
+                ps.Streams.Warning.DataAdded += this.OnScriptWarning_DataAdded;
+                ps.Streams.Information.DataAdded += this.OnScriptInformation_DataAdded;
+
+                ps.Streams.Verbose.Completed += this.OnScript_Completed;
+
+                // execute the script and await the result.
+                PSDataCollection<PSObject> pipelineObjects = await ps.InvokeAsync().ConfigureAwait(false);
+
+                // print the resulting pipeline objects to the console.
+                // _currentOutputStream.WriteLine("----- Pipeline Output below this point -----");
+                foreach (PSObject item in pipelineObjects)
+                {
+                    _currentOutputStream.WriteLine(item.BaseObject.ToString());
+                }
             }
-
-            // create a new hosted PowerShell instance using a custom runspace.
-            // wrap in a using statement to ensure resources are cleaned up.
-
-            using var ps = PowerShell.Create();
-
-            // use the runspace pool.
-            ps.RunspacePool = this.RsPool;
-
-            // specify the script code to run.
-            ps.AddScript(scriptContents);
-
-            // specify the parameters to pass into the script.
-            if (scriptParameters != null) { ps.AddParameters(scriptParameters); }
-
-            // subscribe to events from some of the streams
-            ps.Streams.Error.DataAdded += this.OnScriptError_DataAdded;
-            ps.Streams.Warning.DataAdded += this.OnScriptWarning_DataAdded;
-            ps.Streams.Information.DataAdded += this.OnScriptInformation_DataAdded;
-
-            ps.Streams.Verbose.Completed += this.OnScript_Completed;
-
-            // execute the script and await the result.
-            PSDataCollection<PSObject> pipelineObjects = await ps.InvokeAsync().ConfigureAwait(false);
-
-            // print the resulting pipeline objects to the console.
-            Console.WriteLine("----- Pipeline Output below this point -----");
-            foreach (PSObject item in pipelineObjects)
+            catch (Exception e)
             {
-                Console.WriteLine(item.BaseObject.ToString());
+                _currentOutputStream.Write("EXCEPTION: " + e.Message);
+            }
+            finally
+            {
+                _currentOutputStream = null;
             }
         }
 
@@ -160,6 +185,7 @@ namespace Plugin.PowerShellCLI
             InformationRecord currentStreamRecord = streamObjectsReceived.LastOrDefault();
 
             this.Logger?.Log(LogLevel.Trace, $"TermuxBot-PowerShell: {currentStreamRecord.MessageData}");
+            _currentOutputStream.Write(currentStreamRecord.MessageData);
         }
 
         /// <summary>
@@ -169,10 +195,11 @@ namespace Plugin.PowerShellCLI
         /// <param name="e">The <see cref="DataAddedEventArgs"/> instance containing the event data.</param>
         private void OnScriptError_DataAdded(object sender, DataAddedEventArgs e)
         {
-            var streamObjectsReceived = sender as PSDataCollection<InformationRecord>;
-            InformationRecord currentStreamRecord = streamObjectsReceived.LastOrDefault();
+            var streamObjectsReceived = sender as PSDataCollection<ErrorRecord>;
+            ErrorRecord currentStreamRecord = streamObjectsReceived.LastOrDefault();
 
-            this.Logger?.Log(LogLevel.Error, $"{currentStreamRecord.MessageData}");
+            this.Logger?.Log(LogLevel.Error, $"{currentStreamRecord.Exception.Message}");
+            _currentOutputStream.Write("ERROR: " + currentStreamRecord.Exception.Message);
         }
 
         /// <summary>
@@ -186,6 +213,7 @@ namespace Plugin.PowerShellCLI
             InformationRecord currentStreamRecord = streamObjectsReceived.LastOrDefault();
 
             this.Logger?.Log(LogLevel.Information, $"{currentStreamRecord.MessageData}");
+            _currentOutputStream.Write("INFO: " + currentStreamRecord.MessageData);
         }
 
         /// <summary>
@@ -195,10 +223,11 @@ namespace Plugin.PowerShellCLI
         /// <param name="e">The <see cref="DataAddedEventArgs"/> instance containing the event data.</param>
         private void OnScriptWarning_DataAdded(object sender, DataAddedEventArgs e)
         {
-            var streamObjectsReceived = sender as PSDataCollection<InformationRecord>;
-            InformationRecord currentStreamRecord = streamObjectsReceived.LastOrDefault();
+            var streamObjectsReceived = sender as PSDataCollection<WarningRecord>;
+            WarningRecord currentStreamRecord = streamObjectsReceived.LastOrDefault();
 
-            this.Logger?.Log(LogLevel.Warning, $"{currentStreamRecord.MessageData}");
+            this.Logger?.Log(LogLevel.Warning, $"{currentStreamRecord.Message}");
+            _currentOutputStream.Write("WARNING: " + currentStreamRecord.Message);
         }
 
         /// <summary>
