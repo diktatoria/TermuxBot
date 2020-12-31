@@ -9,6 +9,10 @@ namespace TermuxBot.API
 {
     public abstract class Plugin
     {
+        public Plugin()
+        {
+        }
+
         public Plugin(ILogger logger)
         {
             this.Logger = logger;

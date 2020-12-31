@@ -23,6 +23,13 @@ namespace Plugin.PowerShellCLI
         private TextWriter _currentOutputStream;
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="PowerShellCLIPlugin"/> class.
+        /// </summary>
+        public PowerShellCLIPlugin()
+        {
+        }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="PowerShellCLIPlugin" /> class.
         /// </summary>
         /// <param name="logger">The logger.</param>
